@@ -1,8 +1,9 @@
 import app from "app";
 import prisma from "../../src/config/database";
 import supertest from "supertest";
-import consolesFactory from "../factories/consoles.factory";
+import {consolesFactory} from "../factories/consoles.factory";
 import { cleanDB } from "../helpers";
+import { faker } from "@faker-js/faker";
 
 const api = supertest(app);
 
@@ -33,6 +34,12 @@ describe(`GET /consoles/:id`, () => {
         expect(response.status).toBe(200);
         expect(response.body).toEqual(createdConsole);
     })
+    it(`should respond with status 404 when given an invalid console id`, async () => {
+        await consolesFactory.createConsole();
+        const response = await api.get(`/consoles/0`);
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({});
+    })
 })
 
 describe(`POST /console`, () => {
@@ -53,5 +60,12 @@ describe(`POST /console`, () => {
         delete createdConsole.id;
         const response = await api.post('/consoles').send(createdConsole);
         expect(response.status).toBe(409);
+    })
+    it(`should respond with status 422 when an invalid body is sent`, async () => {
+        const invalidBody = {
+            name: faker.helpers.unique(faker.commerce.product)
+        }
+        const response = await api.post('/games').send(invalidBody);
+        expect(response.status).toBe(422);
     })
 })

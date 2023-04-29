@@ -1,36 +1,35 @@
 import prisma from '../../src/config/database';
 import { faker } from '@faker-js/faker'
-import consolesFactory from './consoles.factory';
 
-
-async function createGame() {
-    const console = await consolesFactory.createConsole();
-    return await prisma.game.create({
+function createGame(consoleId: number) {
+    return prisma.game.create({
         data: {
-            title: faker.commerce.product(),
-            consoleId: console.id
+            title: faker.helpers.unique(faker.commerce.product),
+            consoleId
         }
     })
 }
 
-async function createManyGames() {
-    const console = await prisma.console.create({
-        data: {
-            name: faker.commerce.product()
-        }
+function createManyGames(consoleId: number) {
+    return prisma.game.createMany({
+        data: [
+            generateGame(consoleId),
+            generateGame(consoleId),
+            generateGame(consoleId),
+            generateGame(consoleId),
+        ]
     })
 }
 
-async function generateGame() {
-    const console = await consolesFactory.createConsole();
-    const game = {
-        title: faker.commerce.product(),
-        consoleId: console.id
+function generateGame(consoleId: number) {
+    return {
+        title: faker.helpers.unique(faker.commerce.product),
+        consoleId
     }
-    return game;
 }
 
 export const gamesFactory = {
-    generateGame,
-    createGame
+    createGame,
+    createManyGames,
+    generateGame
 }

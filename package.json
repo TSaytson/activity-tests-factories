@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "dev": "cross-env NODE_ENV=development nodemon src/server.ts",
     "dev:seed": "pnpm dev:load-envs prisma db seed",
     "test:seed": "pnpm test:load-envs prisma db seed",
     "dev:migration": "pnpm dev:load-envs prisma migrate dev",
     "test:migration": "pnpm test:load-envs prisma migrate dev",
     "dev:load-envs": "dotenv -e .env.development",
     "test:load-envs": "dotenv -e .env.test",
-    "test": "pnpm test:load-envs jest --"
+    "test": "pnpm test:load-envs jest -- -i",
+    "test:coverage": "pnpm test -- --coverage"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.prisma.ts"

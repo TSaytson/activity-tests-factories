@@ -3,31 +3,30 @@ import { faker } from '@faker-js/faker'
 
 function generateConsole() {
     return {
-        name: faker.commerce.product()
+        name: faker.helpers.unique(faker.commerce.product)
     }
 }
 
-async function createConsole() {
-    return await prisma.console.create({
+function createConsole() {
+    return prisma.console.create({
         data: {
-            name: faker.commerce.product()
+            name: faker.helpers.unique(faker.commerce.product)
         }
     })
 }
 
-async function createManyConsoles() {
+function createManyConsoles() {
 
-    return await prisma.console.createMany({
-        data: [{
-            name: faker.commerce.product()
-        },
-        {
-            name: faker.commerce.product()
-        }]
+    return prisma.console.createMany({
+        data: [
+            generateConsole(),
+            generateConsole(),
+            generateConsole()
+        ]
     })
 }
 
-export default {
+export const consolesFactory = {
     generateConsole,
     createConsole,
     createManyConsoles

@@ -1,7 +1,6 @@
 import prisma from "../src/config/database";
 
 async function main() {
-    console.log(process.env.DATABASE_URL);
     const consoleExists =
         await prisma.console.findFirst();
     if (!consoleExists) {
